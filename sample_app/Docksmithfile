@@ -1,0 +1,6 @@
+FROM base
+WORKDIR /app
+COPY . /app
+ENV NAME=World
+RUN echo "Build Done"
+CMD ["python3", "app.py"]
