@@ -1,6 +1,6 @@
-FROM base
+FROM alpine:3.18
 WORKDIR /app
 COPY . /app
 ENV NAME=World
 RUN echo "Build Done"
-CMD ["python3", "app.py"]
+CMD ["/bin/sh", "app.sh"]

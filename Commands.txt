@@ -7,8 +7,8 @@ Second run → [CACHE HIT]
 
 
 Test 2: Cache MISS (after file change)
-Edit sample_app/app.py:
-print("Hello Changed")
+Edit sample_app/app.sh:
+echo "Hello Changed"
 Run:
 sudo python3 docksmith.py build -t myapp:latest sample_app
 Expected:
@@ -22,11 +22,10 @@ Hello Changed
 
 
 Test 4: Environment Variables
-Edit Docksmithfile:
+Edit sample_app/Docksmithfile:
 ENV NAME=Universe
-Edit app.py:
-import os
-print("Hello", os.getenv("NAME"))
+Edit sample_app/app.sh:
+echo "Hello $NAME"
 Run:
 sudo python3 docksmith.py build -t myapp:latest sample_app
 sudo python3 docksmith.py run myapp:latest
@@ -35,33 +34,24 @@ Hello Universe
 
 
 Test 5: Isolation (Security Test)
-Edit app.py:
-with open("/anything.txt", "w") as f:
-    f.write("HACK")
-print("Isolation test")
+Edit sample_app/app.sh:
+echo "HACK" > /outside.txt
+echo "Isolation test"
 Run:
 sudo python3 docksmith.py run myapp:latest
 Check:
 ls /
 Expected:
-(file should not exist)
+(outside.txt shouldn't exist)
 
 
 Test 6: List Images
 sudo python3 docksmith.py images
 Expected:
-myapp:latest
+Columns for NAME, TAG, ID, CREATED with your image populated.
 
 
-Test 7: Remove Image
-sudo python3 docksmith.py rmi myapp:latest
-Verify:
-sudo python3 docksmith.py images
-Expected:
-No output
-
-
-Test 8: Internal Storage
+Test 7: Internal Storage
 sudo ls /root/.docksmith/
 Expected:
 layers  images  cache

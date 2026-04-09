@@ -18,11 +18,11 @@ def store_cache(key, digest):
     with open(path, "w") as f:
         f.write(digest)
 
-
 def hash_directory(path):
     hashes = []
 
     for root, dirs, files in os.walk(path):
+        dirs.sort()
         for f in sorted(files):
             full_path = os.path.join(root, f)
             try:
