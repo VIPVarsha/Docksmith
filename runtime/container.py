@@ -18,7 +18,11 @@ def run_container(tag, cmd_override=None, env_override={}):
     for layer in manifest.get("layers", []):
         extract_tar(os.path.join(LAYERS_DIR, layer + ".tar"), root)
 
-    cmd = cmd_override if cmd_override else manifest["config"]["Cmd"]
+    cmd = cmd_override if cmd_override else manifest["config"].get("Cmd")
+    if not cmd:
+        print("Error: No CMD is defined in the image and no override command was provided.")
+        shutil.rmtree(root)
+        sys.exit(1)
     workdir = manifest["config"].get("WorkingDir", "/")
 
     env = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin"}
