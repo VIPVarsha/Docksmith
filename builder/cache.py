@@ -18,7 +18,7 @@ def store_cache(key, digest):
     with open(path, "w") as f:
         f.write(digest)
 
-# 🔥 NEW FUNCTION (IMPORTANT)
+
 def hash_directory(path):
     hashes = []
 
