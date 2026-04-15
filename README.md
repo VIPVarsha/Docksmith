@@ -73,7 +73,17 @@ sudo python3 docksmith.py images
 
 This displays a table showing image name, tag, layer ID, and creation time.
 
-### 5. Docksmithfile Format
+### 5. Remove Images
+
+To delete a container image and its associated layers:
+
+```bash
+sudo python3 docksmith.py rmi myapp:latest
+```
+
+This removes the image with the specified tag and all its cached layers from the system.
+
+### 6. Docksmithfile Format
 
 Create a `Docksmithfile` in your application directory with commands similar to Dockerfile:
 
@@ -94,7 +104,7 @@ Supported commands:
 - `RUN`: Execute commands during build
 - `CMD`: Default command to run when container starts
 
-### 6. Testing & Demonstrations
+### 7. Testing & Demonstrations
 
 Check `Commands.txt` for comprehensive test cases that demonstrate:
 - Cache hit/miss scenarios
