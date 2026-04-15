@@ -47,7 +47,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage:")
         print("  build -t name:tag [--no-cache] <context>")
-        print("  run <name:tag> [cmd...] [-e KEY=VALUE ...]")
+        print("  run [--forensic] <name:tag> [cmd...] [-e KEY=VALUE ...]")
         print("  images")
         print("  rmi <name:tag>")
         sys.exit(1)
@@ -70,14 +70,24 @@ if __name__ == "__main__":
 
     elif cmd == "run":
         if len(sys.argv) < 3:
-            print("Usage: run <name:tag> [cmd...] [-e KEY=VALUE ...]")
+            print("Usage: run [--forensic] <name:tag> [cmd...] [-e KEY=VALUE ...]")
             sys.exit(1)
 
-        tag = sys.argv[2]
+        forensic_mode = False
+        tag_idx = 2
+        
+        if sys.argv[2] == "--forensic":
+            forensic_mode = True
+            tag_idx = 3
+            if len(sys.argv) < 4:
+                print("Usage: run [--forensic] <name:tag> [cmd...] [-e KEY=VALUE ...]")
+                sys.exit(1)
+        
+        tag = sys.argv[tag_idx]
         env_override = {}
         cmd_override = []
         
-        i = 3
+        i = tag_idx + 1
         while i < len(sys.argv):
             if sys.argv[i] == "-e":
                 if i + 1 < len(sys.argv):
@@ -94,7 +104,7 @@ if __name__ == "__main__":
         if not cmd_override:
             cmd_override = None
 
-        run_container(tag, cmd_override, env_override)
+        run_container(tag, cmd_override, env_override, forensic_mode)
 
     elif cmd == "images":
         images()

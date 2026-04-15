@@ -63,6 +63,49 @@ sudo python3 docksmith.py run myapp:latest
 
 This runs the container with the specified tag in an isolated environment.
 
+#### Forensic Mode (Security Audits)
+
+For security investigations and post-incident analysis, use the `--forensic` flag:
+
+```bash
+sudo python3 docksmith.py run --forensic myapp:latest
+```
+
+**What Forensic Mode Does:**
+- Automatically captures the container's filesystem state when it exits
+- Creates an immutable, read-only snapshot of the final state
+- Generates a deterministic tarball archive (stored in `.docksmith/forensics/`)
+- Computes a cryptographic SHA256 hash for integrity verification
+- Particularly useful for analyzing failed containers or security breaches
+
+**Forensic Output:**
+When forensic mode is enabled, a snapshot is saved with the format:
+```
+.docksmith/forensics/
+├── myapp_latest_TIMESTAMP_HASH.tar.gz     # Compressed filesystem snapshot
+└── myapp_latest_TIMESTAMP_HASH.sha256     # Integrity hash file
+```
+
+**Example Usage:**
+```bash
+# Run container with forensic capture enabled
+sudo python3 docksmith.py run --forensic myapp:latest
+
+# Container exits or encounters error
+# Automatic snapshot saved to .docksmith/forensics/
+
+# Verify snapshot integrity
+sha256sum -c myapp_latest_TIMESTAMP_HASH.sha256
+
+# Extract and examine filesystem
+tar -xzf myapp_latest_TIMESTAMP_HASH.tar.gz
+```
+
+This enables workflows like:
+- **Malware Analysis**: Preserve container state for security investigation
+- **Compliance Audits**: Generate immutable audit trails for forensic reports
+- **Debugging**: Inspect exact filesystem state when unexpected errors occur
+
 ### 4. List Images
 
 To view all built container images:
