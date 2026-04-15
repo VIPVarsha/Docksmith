@@ -147,21 +147,7 @@ Supported commands:
 - `RUN`: Execute commands during build
 - `CMD`: Default command to run when container starts
 
-### 7. Testing & Demonstrations
 
-#### Test 1: Build + Cache HIT
-
-Test the caching mechanism by building the same image twice:
-
-```bash
-sudo python3 docksmith.py build -t myapp:latest sample_app
-```
-
-Run the command twice:
-- **First run**: Should show `[CACHE MISS]` for all layer-producing steps
-- **Second run**: Should show `[CACHE HIT]` for all steps (instant build)
-
-This demonstrates that Docksmith correctly caches layers and reuses them when nothing has changed.
 
 #### Test 2: Cache MISS (after file change)
 
