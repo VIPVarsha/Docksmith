@@ -104,14 +104,7 @@ Supported commands:
 - `RUN`: Execute commands during build
 - `CMD`: Default command to run when container starts
 
-### 7. Testing & Demonstrations
 
-Check `Commands.txt` for comprehensive test cases that demonstrate:
-- Cache hit/miss scenarios
-- Container execution
-- Environment variables
-- Security/isolation verification
-- Image management
 
 Run tests with:
 
