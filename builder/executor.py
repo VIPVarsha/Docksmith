@@ -4,6 +4,7 @@ from builder.cache import compute_cache_key, check_cache, store_cache, hash_dire
 from builder.layers import create_layer
 from utils.paths import init_dirs, IMAGES_DIR, LAYERS_DIR
 from utils.tar_utils import extract_tar
+from utils.hashing import sha256_bytes
 from runtime.isolation import isolate_and_run
 
 def build(tag, context, no_cache=False):
@@ -108,14 +109,20 @@ def build(tag, context, no_cache=False):
     manifest = {
         "name": tag.split(":")[0],
         "tag": tag.split(":")[1] if ":" in tag else "latest",
-        "layers": layers,
+        "digest": "",
         "created": t_created,
         "config": {
             "Env": [f"{k}={v}" for k, v in env.items()],
             "Cmd": final_cmd,
             "WorkingDir": workdir
-        }
+        },
+        "layers": layers
     }
+
+    # Compute manifest digest: serialize with digest="", hash it, then set it
+    manifest_json = json.dumps(manifest, separators=(',', ':'), sort_keys=True)
+    manifest_hash = sha256_bytes(manifest_json.encode())
+    manifest["digest"] = f"sha256:{manifest_hash}"
 
     with open(path, "w") as f:
         json.dump(manifest, f, indent=2)
