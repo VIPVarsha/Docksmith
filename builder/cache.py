@@ -8,9 +8,12 @@ def compute_cache_key(prev_digest, instruction, workdir, env):
     return sha256_bytes(data.encode())
 
 def check_cache(key):
+    from utils.paths import LAYERS_DIR
     path = os.path.join(CACHE_DIR, key)
     if os.path.exists(path):
-        return open(path).read().strip()
+        digest = open(path).read().strip()
+        if os.path.exists(os.path.join(LAYERS_DIR, digest + ".tar")):
+            return digest
     return None
 
 def store_cache(key, digest):

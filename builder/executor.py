@@ -67,7 +67,12 @@ def build(tag, context, no_cache=False):
             
             temp_root = tempfile.mkdtemp()
             for layer in layers:
-                extract_tar(os.path.join(LAYERS_DIR, layer + ".tar"), temp_root)
+                layer_path = os.path.join(LAYERS_DIR, layer + ".tar")
+                if not os.path.exists(layer_path):
+                    print(f"Error: Backing layer {layer[:12]} is missing. Was it deleted by 'rmi'? Fix by running 'sudo python3 setup_base.py'.")
+                    shutil.rmtree(temp_root)
+                    sys.exit(1)
+                extract_tar(layer_path, temp_root)
 
             if cmd == "COPY":
                 src, dest = arg.split(" ", 1)

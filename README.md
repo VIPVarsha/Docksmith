@@ -94,12 +94,7 @@ sudo python3 docksmith.py run --forensic myapp:latest
 # Container exits or encounters error
 # Automatic snapshot saved to .docksmith/forensics/
 
-# Verify snapshot integrity
-sha256sum -c myapp_latest_TIMESTAMP_HASH.sha256
 
-# Extract and examine filesystem
-tar -xzf myapp_latest_TIMESTAMP_HASH.tar.gz
-```
 
 This enables workflows like:
 - **Malware Analysis**: Preserve container state for security investigation
@@ -153,10 +148,7 @@ Supported commands:
 
 Modify a source file and rebuild to trigger cache invalidation:
 
-```bash
-# Edit sample_app/app.sh - change the echo message
-echo "#!/bin/sh" > sample_app/app.sh
-echo 'echo "Hello Changed"' >> sample_app/app.sh
+
 
 # Rebuild
 sudo python3 docksmith.py build -t myapp:latest sample_app
@@ -200,7 +192,8 @@ sudo python3 docksmith.py run myapp:latest
 # Output: Hello Universe
 
 # Run with ENV override
-sudo python3 docksmith.py run -e NAME=Docksmith myapp:latest
+sudo python3 docksmith.py run myapp:latest -e NAME=Docksmith
+
 # Output: Hello Docksmith
 ```
 
@@ -218,8 +211,7 @@ Verify that files written inside a container cannot escape to the host:
 #!/bin/sh
 echo "HACK" > /outside.txt
 echo "Isolation test"
-echo "Checking if /outside.txt was created..."
-ls /
+echo "Check
 # EOF
 
 # Build
@@ -261,7 +253,8 @@ Columns displayed:
 
 Verify the directory structure created by Docksmith:
 
-```bash
+```bashing if /outside.txt was created..."
+ls /
 ls -la ~/.docksmith/
 ```
 
@@ -314,11 +307,3 @@ ls -la ~/.docksmith/images/
 sudo python3 docksmith.py rmi myapp:latest
 ```
 
-This comprehensive workflow demonstrates:
-- ✅ Build caching (MISS/HIT)
-- ✅ Container execution
-- ✅ Environment variable injection and override
-- ✅ Process isolation
-- ✅ Image management
-- ✅ Forensic capabilities
-- ✅ Content-addressed layer storage

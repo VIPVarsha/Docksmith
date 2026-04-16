@@ -42,7 +42,12 @@ def run_container(tag, cmd_override=None, env_override={}, forensic_mode=False):
     root = tempfile.mkdtemp()
 
     for layer in manifest.get("layers", []):
-        extract_tar(os.path.join(LAYERS_DIR, layer + ".tar"), root)
+        layer_path = os.path.join(LAYERS_DIR, layer + ".tar")
+        if not os.path.exists(layer_path):
+            print(f"Error: Backing layer {layer[:12]} is missing. Was it deleted by 'rmi'? Fix by rebuilding or running 'sudo python3 setup_base.py'.")
+            shutil.rmtree(root)
+            sys.exit(1)
+        extract_tar(layer_path, root)
 
     cmd = cmd_override if cmd_override else manifest["config"].get("Cmd")
     if not cmd:
